@@ -20,7 +20,6 @@
 * 4:full details, may have prepostrous lines of info
 */
 
-
 int maze[MAX][MAX];
 int visit[MAX][MAX];/*visited 1, unvisited 2*/
 struct vector{
@@ -34,7 +33,8 @@ struct lists{
 	int x;
 	int y;
 	struct lists *next;
-};
+};/*define coordinates*/
+
 struct lists *creatNewList();
 int listLen;
 void deleteList(int n);
@@ -43,7 +43,7 @@ struct lists *phead,*ptail;
 
 int sol_row,sol_col;
 
-#if  DEBUG
+#if  DEBUG /*to look for and remove the faults in a computer program*/
 void testdrawMap(int  maxLine,int Enter){
 	int i,j;
 	int map[MAX][MAX];
@@ -60,7 +60,7 @@ void testdrawMap(int  maxLine,int Enter){
 	for(i=0;i<maxLine;i++){
 		for(j=0;j<maxLine;j++){
 			if (map[i][j] >= 2){
-				printf("%c",'o');
+				printf("%c",'o');/*Express the current road state with simple symbols*/
 			}
 			if (map[i][j] == CLEAR){
 				printf(" ");
@@ -86,7 +86,7 @@ void checkList(){
 	}
 	printf("Listchecked: %d\n",i);
 	if (p2 != ptail){
-		printf("Ptail is wrong!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
+		printf("Ptail is wrong!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");/*error*/
 	}
 }
 
@@ -128,16 +128,17 @@ int testIsolateCell(int x,int y,int edge,int step ){
 }
 #endif 
 
-
+/*display the maze*/
 void drawMap(int  maxLine, HANDLE handle, int Enter){
 	int i,j;
 	
 	for(i=0;i<maxLine;i++){
 		for(j=0;j<maxLine;j++){
 #if DEBUG
-printf("%d ",maze[i][j]);
+printf("%d ",maze[i][j]);/*display the maze to find error*/
 #endif
-			if (maze[i][j] >= 2){
+                        /*display varied figures as the value of maze change*/
+			if (maze[i][j] == DESTINATION || maze[i][j] == WAY){
 				SetConsoleTextAttribute(handle, FOREGROUND_INTENSITY | FOREGROUND_GREEN);
 				printf("%c%c",161,239);
 			}
@@ -182,10 +183,10 @@ void iniData(){
 			maze[i][j] = BLOCK;
 		}
 	}
-	move[0].x = 1;  move[0].y = 0;  //right
-	move[1].x = -1; move[1].y = 0;  //left
-	move[2].x = 0;  move[2].y = 1;  //up
-	move[3].x = 0;  move[3].y = -1; //down
+	move[0].x = 1;  move[0].y = 0;  /*go right*/
+	move[1].x = -1; move[1].y = 0;  /*go left*/
+	move[2].x = 0;  move[2].y = 1;  /*go up*/
+	move[3].x = 0;  move[3].y = -1; /*go down*/
 	
 	iniSolution();
 }
@@ -487,6 +488,7 @@ struct lists *getlistinfo(int position){
 *
 *  using algorithms illustrated in: https://en.wikipedia.org/wiki/Maze_generation_algorithm
 */
+
 int generateMaze_prim(int edge){
 	struct vector nstart;
 	struct lists *visiting;
@@ -592,8 +594,9 @@ void getmaze(int n)
 {
 	int i,j,a,b;	
 	i=n;j=n;a=1;b=1;
-	maze[a][b]=WAY;/*入口*/ 
+	maze[a][b]=WAY;/*鍏ュ彛*/ 
 	start.x = a; start.y = b;
+	end.x = n-2; end.y= n-2;
 	
 	srand(time(NULL));
     while (i>3||j>3){
@@ -613,7 +616,7 @@ void getmaze(int n)
 		{
 			maze[++a][b]=WAY;i--;
 		}
-	}/*随机生成一条通向终点的路径*/
+	}/*Randomly generate a path to the end*/
 	for(i=1;i<n-1;i++)
 	{
 		for(j=1;j<n-1;j++)
@@ -623,7 +626,8 @@ void getmaze(int n)
 				maze[i][j]=rand()%2;
 			}
 		}
-	}/*本来其他地方都是0，路径是1，现在把除了最外圈围墙以外的部分随机设为0或1*/
+	}/*The former value of the maze: blocks is 0, the path is 1.
+	Now the rest part except the outer ring wall is randomly set to 0 or 1.*/
 }
 
 /**
